@@ -1,6 +1,7 @@
-package com.example.multidatasourcedemo;
+package com.example.multidatasourcedemo.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -17,11 +18,28 @@ import javax.sql.DataSource;
 @Configuration
 public class MultiDBConfig {
 
+
+    @Value("${spring.datasource.test-while-idle}")
+    private boolean  testWhileIdle;
+    @Value("${spring.datasource.time-between-eviction-runs-millis}")
+    private int timeBetweenEvictionRunsMillis;
+    @Value("${spring.datasource.validation-query}")
+    private String validationQuery;
+
     @Bean(name = "fooDb")
     @ConfigurationProperties(prefix = "foo.datasource")
     @Primary
     public DataSource fooDataSource() {
-        return DataSourceBuilder.create().build();
+        return commonProcess(DataSourceBuilder.create().build());
+    }
+
+    private DataSource commonProcess(DataSource build) {
+        org.apache.tomcat.jdbc.pool.DataSource ds = (org.apache.tomcat.jdbc.pool.DataSource) build;
+        ds.setTestWhileIdle(testWhileIdle);
+        ds.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
+        ds.setValidationQuery(validationQuery);
+
+        return build;
     }
 
     @Bean(name = "fooJdbcTemplate")
@@ -32,7 +50,7 @@ public class MultiDBConfig {
     @Bean(name = "barDb")
     @ConfigurationProperties(prefix = "bar.datasource")
     public DataSource barDataSource() {
-        return DataSourceBuilder.create().build();
+        return commonProcess(DataSourceBuilder.create().build());
     }
 
     @Bean(name = "barJdbcTemplate")
@@ -43,7 +61,7 @@ public class MultiDBConfig {
     @Bean(name = "testDb")
     @ConfigurationProperties(prefix = "test.datasource")
     public DataSource testDataSource() {
-        return DataSourceBuilder.create().build();
+        return commonProcess(DataSourceBuilder.create().build());
     }
 
     @Bean(name = "testJdbcTemplate")
