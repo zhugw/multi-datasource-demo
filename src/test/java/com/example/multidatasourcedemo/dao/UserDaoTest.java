@@ -1,14 +1,9 @@
 package com.example.multidatasourcedemo.dao;
 
-import com.example.multidatasourcedemo.config.MultiDBConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -17,10 +12,10 @@ import static org.junit.Assert.assertEquals;
  * Created by zhuguowei on 6/26/17.
  */
 @RunWith(SpringRunner.class)
-@JdbcTest(includeFilters = @ComponentScan.Filter(type= FilterType.ASSIGNABLE_TYPE,value=UserDao.class))
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
-@Import(MultiDBConfig.class)
-//@SpringBootTest
+//@JdbcTest(includeFilters = @ComponentScan.Filter(type= FilterType.ASSIGNABLE_TYPE,value=UserDao.class))
+//@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+//@Import(MultiDBConfig.class)
+@SpringBootTest
 public class UserDaoTest {
     @Autowired
     private UserDao dao;
